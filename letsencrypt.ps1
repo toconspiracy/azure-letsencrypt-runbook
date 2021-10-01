@@ -25,7 +25,7 @@
 #######################################################################################
 
 Param(
-    [string[]]$Domains,
+    [string[]]$DomainsJSON,
     [string]$EmailAddress,
     [string]$STResourceGroupName,
     [string]$storageName,
@@ -33,6 +33,8 @@ Param(
     [string]$kvlName,
     [string]$kvlCertificateName,
 )
+
+$Domains = ConvertFrom-Json -InputObject $DomainsJSON
 
 Connect-AzAccount -Identity
 Get-ChildItem -Path $env:TEMP -Include *.* -File -Recurse | foreach { $_.Delete()}
