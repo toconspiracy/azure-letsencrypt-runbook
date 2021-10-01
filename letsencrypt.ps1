@@ -25,19 +25,33 @@
 #######################################################################################
 
 Param(
-    [string[]]$DomainsJSON,
+    [string]$DomainsJSON,
     [string]$EmailAddress,
     [string]$STResourceGroupName,
     [string]$storageName,
     [string]$storageContainerName,
     [string]$kvlName,
     [string]$kvlCertificateName,
+    [string]$uaiClientId
 )
 
+Get-ChildItem -Path $env:TEMP -Include *.* -File -Recurse | foreach { $_.Delete()}
 $Domains = ConvertFrom-Json -InputObject $DomainsJSON
 
-Connect-AzAccount -Identity
-Get-ChildItem -Path $env:TEMP -Include *.* -File -Recurse | foreach { $_.Delete()}
+### Ensures you do not inherit an AzContext in your runbook
+Write-Output "Step 1"
+Disable-AzContextAutosave -Scope Process
+
+### Connect to Azure with user-assigned managed identity
+Write-Output "Step 2 $uaiClientId"
+$AzureContext = (Connect-AzAccount -Identity -AccountId $uaiClientId).context
+
+Write-Output "Step 3"
+Write-Output ($AzureContext | Format-List | Out-String)
+
+### set and store context
+Write-Output "Step 4"
+$AzureContext = Set-AzContext -SubscriptionName (Connect-AzAccount -Identity -AccountId $uaiClientId).context.Subscription -DefaultProfile (Connect-AzAccount -Identity -AccountId $uaiClientId).context
 
 # Create a state object and save it to the harddrive
 Write-Output "Step 5"
