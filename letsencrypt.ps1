@@ -35,6 +35,11 @@ Param(
     [string]$uaiClientId
 )
 
+Write-Output "Domains"
+Write-Output ($Domains | Format-List | Out-String)
+Write-Output ($DomainsJSON | Format-List | Out-String)
+
+
 Get-ChildItem -Path $env:TEMP -Include *.* -File -Recurse | foreach { $_.Delete()}
 $Domains = ConvertFrom-Json -InputObject $DomainsJSON
 
