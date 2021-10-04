@@ -61,8 +61,8 @@ $AzureContext = Set-AzContext -SubscriptionName (Connect-AzAccount -Identity -Ac
 # Create a state object and save it to the harddrive
 Write-Output "Step 5"
 $state = New-ACMEState -Path $env:TEMP
-#$serviceName = 'LetsEncrypt'
-$serviceName = 'LetsEncrypt-Staging'
+#$serviceName = 'LetsEncrypt-Staging'
+$serviceName = 'LetsEncrypt'
 
 # Fetch the service directory and save it in the state
 Write-Output "Step 6"
